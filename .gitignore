@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+.venv/
+
+# MacOS files
+.DS_Store
+
+# VS Code settings (optional, if you have personal VSCode settings in the repo folder)
+.vscode/
+
+# uv lock cache (if any weird temp files appear — usually not needed, but safe)
+*.uvcache/

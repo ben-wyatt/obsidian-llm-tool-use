@@ -1,0 +1,12 @@
+[project]
+name = "obsidian-llm-tool-use"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=1.76.0",
+    "psutil>=7.0.0",
+    "python-dotenv>=1.1.0",
+    "requests>=2.32.3",
+]
