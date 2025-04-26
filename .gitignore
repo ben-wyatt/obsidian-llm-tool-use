@@ -14,3 +14,5 @@ __pycache__/
 
 # uv lock cache (if any weird temp files appear — usually not needed, but safe)
 *.uvcache/
+
+.env

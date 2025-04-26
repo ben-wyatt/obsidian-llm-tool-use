@@ -1,4 +1,14 @@
 import ollama as ollama
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+with open('small_sys_prompt.txt', 'r') as file:
+    SYS_PROMPT = file.read()
+
+
+
 
 
 def test_ollama():
@@ -9,8 +19,8 @@ def test_ollama():
         stream = client.chat.completions.create(
             model="qwen2.5:7b-instruct-q4_K_M",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": "Hello, how can I use Ollama with Python?"}
+                {"role": "system", "content": SYS_PROMPT},
+                {"role": "user", "content": "Make a todo list with 5 things to do today."}
             ],
             stream=True
         )
