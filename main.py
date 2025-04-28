@@ -63,11 +63,36 @@ def test_sys_prompt():
     create_note("GRPO",result)
     
 
+def test_evals():
+    """Test evaluations for the note generation module."""
+    from dspy_modules.note_gen import links_exist
 
+
+    note_list = ['A','B','Hello','Reinforcement Learning']
+    print(f"notes: {note_list}")
+    assert not links_exist("This is a note with links to [[Reinforcement Learning]] and [[D]].", note_list)
+    assert links_exist("This note has no links.", note_list)
+    assert not links_exist("This note has a link to [[NonExistentNote]].", note_list)
+    assert links_exist("This note has a link to [[Reinforcement Learning#hello there]].", note_list)
+    assert links_exist("This note has links to [[Reinforcement Learning|RL]] ", note_list)
+    assert links_exist("This note has a link to [[Reinforcement Learning|RL]] and [[A#B]] and [[B#A|Hello]].", note_list)
+    
+    print("All tests passed!")
+
+def test_evals_2():
+    """Use the evaluate_note"""
+    from dspy_modules.note_gen import evaluate_note
+
+    note_list = ['A','B','Hello','Reinforcement Learning']
+    with open('sample_note.md', 'r') as file:
+        note_content = file.read()
+    return evaluate_note(note_content,note_list,verbose=True)
 
 
 
 if __name__ == "__main__":
     # test_ollama()
-    test_sys_prompt() 
+    # test_sys_prompt() 
+    result = test_evals_2()
+    print(f"Evaluation result: {result:.2f} (pass rate)")
     print("Done!")
