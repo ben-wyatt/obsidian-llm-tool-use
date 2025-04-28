@@ -22,7 +22,8 @@ def test_ollama(prompt:str =SYS_PROMPT):
                 {"role": "system", "content": prompt},
                 # {"role": "user", "content": "Make a todo list with 5 things to do today."}
             ],
-            stream=True
+            stream=True,
+            max_tokens=2000,
         )
 
         print("Response from Ollama:")

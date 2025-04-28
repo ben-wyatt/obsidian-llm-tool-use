@@ -26,8 +26,8 @@ logger = logging.getLogger("ollama")
 # Default configuration
 DEFAULT_OLLAMA_URL = "http://localhost:11434/v1"
 DEFAULT_OLLAMA_MODEL = "qwen2.5"
-HEALTH_CHECK_RETRIES = 5
-HEALTH_CHECK_DELAY = 1  # seconds
+HEALTH_CHECK_RETRIES = 20  # Increased from 5 to 20
+HEALTH_CHECK_DELAY = 2  # Increased from 1 to 2 seconds
 
 
 def get_ollama_process() -> Optional[psutil.Process]:

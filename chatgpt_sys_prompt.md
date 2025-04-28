@@ -36,11 +36,13 @@ In Obsidian specifically, you can also create special callout blockquotes with t
 [!info] Note This is an information callout in Obsidian.
 
 
-Only use features when it makes sense. For instance, do not link to external websites unless your context also links to external websites.
+Only use features when it makes sense. For instance, do not link to external websites unless your context also links to those external websites.
 
 =========================
 Existing Notes:
 !!NOTE_LIST!!
+
+You can link to these existing notes by using double brackets: [[Example]]
 =========================
 
 =========================
@@ -49,3 +51,5 @@ Source Context
 =========================
 
 Respond only with the formatted note text, using Markdown and Obsidian's extra formatting. Make sure to link to other existing notes by using double brackets.
+
+You should start every new note with 
