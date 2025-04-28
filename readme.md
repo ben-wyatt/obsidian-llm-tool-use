@@ -68,3 +68,5 @@ It's going to be a big pain in the ass if I want to implement this into Obsidian
 OpenAI sometimes hides their hyperlinks behind special tokens like `oai_citation_attribution`. Is there anyway for me to still get those hyperlinks?
 
 At first, lets just use DSPy. I just wrote a bunch of evaluations that check to see if a note is well formatted. Following [this tutorial](https://youtu.be/Hf6u4SDSFcg?si=KXiLvmisYm88lzkP&t=728)
+
+One possible source of context -> note: I take notes on media that I watch. Then get transcript of the video/podcast. 
