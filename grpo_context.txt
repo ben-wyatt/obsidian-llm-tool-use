@@ -1,0 +1,75 @@
+Group Relative Policy Optimization (GRPO) is a lightweight variant of policy-gradient reinforcement learning created by DeepSeek-AI for post-training large language models (LLMs).  Instead of learning a separate critic network like Proximal Policy Optimization (PPO), GRPO estimates the “advantage” of each generated response by comparing it to its peers in the same prompt-level batch. By turning relative quality signals from a reward model into direct policy updates, GRPO cuts memory/compute roughly in half while still delivering large gains on mathematical and general-reasoning benchmarks—most famously powering DeepSeekMath-7B and the DeepSeek-R1 series.  ￼ ￼ ￼
+
+Origins & Motivation
+	•	Why a new algorithm? PPO became the de-facto standard for RLHF but doubles hardware requirements because it trains a critic as large as the policy and must back-prop through long token sequences. DeepSeek’s researchers wanted a cheaper path to boost reasoning, so they replaced the critic with a group baseline computed on-the-fly.  ￼ ￼
+	•	First appearance. GRPO was introduced in the DeepSeekMath paper (Apr 2024) as “a variant of PPO that foregoes the critic model, instead estimating the baseline from group scores.”  ￼
+	•	Rapid adoption. It became the core RL stage of DeepSeek-R1-Zero, an LLM trained entirely with pure RL (no supervised finetuning) that rivals proprietary GPT-4-class models on reasoning tasks.  ￼ ￼
+
+Core Idea: Group-Relative Advantage
+	1.	Sampling. For each prompt q, the current policy samples G diverse completions.
+	2.	Scoring. A frozen reward model assigns a scalar reward rᵢ to each completion.
+	3.	Normalization. Rewards are standardized inside the group:
+\tilde{r}_i = (r_i - \mu_r)/\sigma_r.
+	4.	Token-wise advantage. Every token in completion i inherits that same normalized score, yielding \hat{A}_{i,t} = \tilde{r}_i.
+	5.	Policy update. GRPO maximizes a clipped ratio objective reminiscent of PPO
+\mathcal{L}\text{GRPO} = \mathbb{E}\big[\min\big(\rho{i,t}\,\hat{A}{i,t},\;\text{clip}(\rho{i,t},1\!-\!\epsilon,1\!+\!\epsilon)\,\hat{A}{i,t}\big)\big] \;-\; \beta\,\text{KL}(\pi\theta\|\pi_\text{ref}),
+where \rho_{i,t}=\frac{\pi_\theta(o_{i,t}|q,o_{i,<t})}{\pi_{\text{old}}(o_{i,t}|q,o_{i,<t})}. The KL term is added outside the reward, simplifying advantage computation.  ￼
+
+Outcome vs Process Supervision
+	•	Outcome GRPO uses a single reward at the end of each completion (good for short tasks).
+	•	Process GRPO attaches rewards to reasoning steps (e.g., after every “” tag) and accumulates them forward, giving denser signals for long chains of thought.  ￼
+
+Iterative RL
+
+GRPO often runs in cycles: after a few optimizer steps, new samples are added to the reward-model replay buffer and the reward model itself is refreshed, keeping supervision relevant as the policy improves.  ￼
+
+Empirical Gains
+
+Model	Benchmark	Before GRPO	After GRPO	Δ
+DeepSeekMath-7B	MATH (competition)	46.8 %	51.7 %	+4.9 pp
+DeepSeekMath-7B	GSM8K	82.9 %	88.2 %	+5.3 pp
+DeepSeek-R1-Zero 7B	AIME 2024 pass@1	15.6 %	29 %	+13.4 pp
+
+￼ ￼
+
+Practical Benefits
+	•	~50 % GPU footprint drop. No critic halves model-memory during back-propagation.  ￼
+	•	Fewer hyper-parameters. No GAE λ or value-loss weight to tune; the main knobs are group size G, clip ε, and KL weight β.  ￼
+	•	Good variance reduction. Group standardization naturally centers rewards, delivering low-variance gradients without a learned baseline.  ￼
+	•	Still needs many samples. Each update requires multiple completions per prompt; large G improves stability but raises cost. Choosing G ≈ 8–16 is common.  ￼
+
+Implementation Notes & Open-Source Tooling
+
+Library / Repo	What it provides	Link
+Predibase RLFT	One-line API for GRPO finetuning (+LoRA adapters).	[oai_citation_attribution:17‡Quickstart
+HuggingFace open-r1	Reference grpo.py showing a minimal trainer loop.	￼
+TRL (≥ 0.9)	trlx now includes trlx.gpo_trainer for GRPO.	￼
+DeepSeek R1 tech-report	Full hyper-parameters for 70 B training.	￼
+
+To plug GRPO into your workflow:
+	1.	Dataset – prompts only; no human rankings needed.
+	2.	Reward functions – programmable or learned; return higher scores for desired behaviors.
+	3.	Sampling loop – generate G completions per prompt with temperature > 0.
+	4.	Compute group-relative advantages and run the GRPO update for a few epochs.
+	5.	Periodically refresh the reward model or anneal β to keep KL in check.
+
+GRPO in Context
+
+Aspect	GRPO	PPO	DPO
+Critic required	❌	✅	❌
+Reward source	scalar RM (any)	scalar RM	pairwise preferences
+Advantage calc.	group baseline	value-function + GAE	implicit (log-ratio)
+Compute & memory	Low	High	Lowest
+Strengths	Efficient, stable, fits reasoning	Well-studied, generic	Simplicity, label-efficient
+Caveats	Needs many samples per prompt; hyper-sensitive to β	Heavy; critic drift	Struggles when rewards are not pairwise
+
+￼ ￼
+
+Research Frontiers
+	•	Multi-agent GRPO. Using separate groups from different policies to encourage diversity.  ￼
+	•	Tool-augmented rewards. Scoring completions via programmatic checks (unit tests, formal proofs).  ￼
+	•	Safety alignment. Combining GRPO with constitutional constraints in the reward function.  ￼
+
+⸻
+
+For a broader industry view on how DeepSeek’s GRPO-driven models are reshaping AI economics, check out the coverage below.

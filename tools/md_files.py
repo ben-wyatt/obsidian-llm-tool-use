@@ -11,6 +11,9 @@ def get_notes_list()-> list[str]:
     """Get a list of all markdown file names in the vault."""
     notes_list = []
     for root, _, files in os.walk(VAULT_PATH):
+        # Skip the .obsidian folder and its subfolders
+        if ".obsidian" in root.split(os.sep):
+            continue
         for file in files:
             if file.endswith('.md'):
                 notes_list.append(file[:-3])  # Remove the '.md' extension
