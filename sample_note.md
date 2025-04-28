@@ -11,7 +11,7 @@ tags:
 
 Here are some links:
 
-[[A]] [[B]]  [[Reinforcement Learning#hey!|whatever]]
+[[A]] [[B]]  [[Reinforcement Learning#hey|whatever]] [[A#B|d]]
 
 
 
@@ -48,3 +48,6 @@ class Explain(dspy.Signature):
 
 explain = dspy.ChainOfThought(Explain)
 print(explain(topic="DSPy").answer)
+```
+
+### Hey You !

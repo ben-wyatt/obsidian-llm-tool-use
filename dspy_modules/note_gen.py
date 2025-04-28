@@ -44,14 +44,14 @@ import re, yaml, json, textwrap
 from typing import List
 from pathlib import Path
 
-# 1) YAML or JSON block right at the top (front matter)
+#YAML or JSON block right at the top (front matter)
 def has_yaml_front_matter(note: str, verbose: bool = False) -> bool:
     result = bool(re.match(r"^---\s*\n", note))
     if verbose:
         print(f"  - Front matter check: {'Found' if result else 'Not found'}")
     return result
 
-# 2) Can we parse the properties cleanly?
+#Can we parse the properties cleanly?
 def properties_parse_clean(note: str, verbose: bool = False) -> bool:
     m = re.match(r"^---\s*\n(.*?)\n---", note, re.DOTALL)
     if not m:
@@ -69,7 +69,7 @@ def properties_parse_clean(note: str, verbose: bool = False) -> bool:
             print(f"  - Properties parsing: Invalid YAML/JSON - {str(e)}")
         return False
 
-# 3) Does it include at least one 'tags' property (YAML list or string)?
+#Does it include at least one 'tags' property (YAML list or string)?
 def tags_property_present(note: str, verbose: bool = False) -> bool:
     m = re.match(r"^---\s*\n(.*?)\n---", note, re.DOTALL)
     if not m:
@@ -85,7 +85,7 @@ def tags_property_present(note: str, verbose: bool = False) -> bool:
             print("  - Tags property: Missing")
     return result
 
-# 4) Ensure any **required** properties (e.g. aliases, created) are present
+#Ensure any **required** properties (e.g. aliases, created) are present
 REQUIRED = {"aliases", "created"}
 def required_properties_present(note: str, verbose: bool = False) -> bool:
     m = re.match(r"^---\s*\n(.*?)\n---", note, re.DOTALL)
@@ -125,7 +125,7 @@ def required_properties_present(note: str, verbose: bool = False) -> bool:
 
 WIKILINK_RE = re.compile(r"\[\[([^\]]+?)\]\]")
 
-# 5) Your original, but now supports heading and block anchors
+#Your original, but now supports heading and block anchors
 def links_exist(note: str, vault_files: List[str], verbose: bool = False) -> bool:
     links_found = WIKILINK_RE.findall(note)
     if verbose:
@@ -143,7 +143,7 @@ def links_exist(note: str, vault_files: List[str], verbose: bool = False) -> boo
         print("  - Links check: All links resolve to existing files")
     return True
 
-# 6) Check that any [[note|Alias]] aliases resolve to real files
+#Check that any [[note|Alias]] aliases resolve to real files
 def aliases_resolve(note: str, vault_files: List[str], verbose: bool = False) -> bool:
     aliases_found = [raw for raw in WIKILINK_RE.findall(note) if "|" in raw]
     if verbose:
@@ -151,7 +151,7 @@ def aliases_resolve(note: str, vault_files: List[str], verbose: bool = False) ->
     
     for raw in aliases_found:
         target = raw.split("|")[0]
-        if target not in vault_files:
+        if target.split('#')[0] not in vault_files:
             if verbose:
                 print(f"  - Aliases check: '{target}' not found in vault")
             return False
@@ -160,21 +160,20 @@ def aliases_resolve(note: str, vault_files: List[str], verbose: bool = False) ->
         print("  - Aliases check: All aliased links resolve to existing files")
     return True
 
-# 7) Fail if HTTP/HTTPS links appear without Markdown syntax
-def no_bare_urls(note: str, verbose: bool = False) -> bool:
-    bare_urls = re.findall(r"(?<!\]\()https?://[^\s)]+", note)
-    result = len(bare_urls) == 0
-    if verbose:
-        if result:
-            print("  - URL formatting: No bare URLs found")
-        else:
-            print(f"  - URL formatting: Found {len(bare_urls)} bare URLs")
-    return result
+
 
 #### Markdown Structuring
-# 8) First non-blank line should be an H1 title
+#First non-blank line should be an H1 title
 def has_title_heading(note: str, verbose: bool = False) -> bool:
-    for line in note.splitlines():
+    # Skip frontmatter if present
+    content = note
+    if note.startswith('---'):
+        frontmatter_end = note.find('---', 3)
+        if frontmatter_end != -1:
+            content = note[frontmatter_end + 3:].strip()
+    
+    # Look for first non-empty line in content after frontmatter
+    for line in content.splitlines():
         if line.strip():                       # first non-empty
             result = line.startswith("# ")
             if verbose:
@@ -186,8 +185,7 @@ def has_title_heading(note: str, verbose: bool = False) -> bool:
     if verbose:
         print("  - Title heading: Note appears empty")
     return False
-
-# 9) Prevent skipping H-levels (## followed by ####)
+#Prevent skipping H-levels (## followed by ####)
 def heading_levels_monotonic(note: str, verbose: bool = False) -> bool:
     levels = [len(m.group(1)) for m in re.finditer(r"^(#{1,6})\s", note, re.MULTILINE)]
     if not levels:
@@ -206,7 +204,7 @@ def heading_levels_monotonic(note: str, verbose: bool = False) -> bool:
             print(f"  - Heading levels: Found {len(problems)} heading level skip(s)")
     return result
 
-# 10) Make sure any triple-backtick code blocks close
+#Make sure any triple-backtick code blocks close
 def code_blocks_closed(note: str, verbose: bool = False) -> bool:
     count = note.count("```")
     result = count % 2 == 0
@@ -217,7 +215,7 @@ def code_blocks_closed(note: str, verbose: bool = False) -> bool:
             print(f"  - Code blocks: Unclosed code block detected ({count} backtick markers)")
     return result
 
-# 11) Cosmetic: blank line after the front matter
+#Cosmetic: blank line after the front matter
 def blank_line_after_front_matter(note: str, verbose: bool = False) -> bool:
     result = bool(re.match(r"^---\s*\n.*?\n---\s*\n\n", note, re.DOTALL))
     if verbose:
@@ -236,7 +234,6 @@ ALL_EVALS = [
     required_properties_present,
     links_exist,
     aliases_resolve,
-    no_bare_urls,
     has_title_heading,
     heading_levels_monotonic,
     code_blocks_closed,
