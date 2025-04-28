@@ -16,12 +16,14 @@ hello-world
 - expand selection
 - Chat
 - internet search
+- multi-hop rag?
 
 
 ## List of Actionable Items
 - write first system prompt: include the details on how obsidian works like [[]] and whatever. See how well it performs
 - make a new test vault folder
 - write first two tools: get list of .md files in Vault folder, create new file and write something in that file.
+- build some examples: context, note list -> nicely formatted notes.
 
 
 
