@@ -46,6 +46,7 @@ def get_ollama_process() -> Optional[psutil.Process]:
 def check_ollama_health(base_url: str = DEFAULT_OLLAMA_URL) -> bool:
     """
     Check if Ollama server is healthy and responding.
+    Returns True if the Ollama root endpoint returns HTTP 200, otherwise False.
     
     Args:
         base_url: The base URL of the Ollama server
@@ -53,7 +54,9 @@ def check_ollama_health(base_url: str = DEFAULT_OLLAMA_URL) -> bool:
     Returns:
         bool: True if the server is healthy, False otherwise
     """
-    health_url = base_url.replace('/v1', '') + '/health'
+    # The Ollama server responds with "Ollama is running" at the root path (`/`)
+    # A 200 status code indicates the service is up.
+    health_url = base_url.replace('/v1', '')
     try:
         response = requests.get(health_url, timeout=2)
         return response.status_code == 200
@@ -113,7 +116,7 @@ def init_ollama() -> Optional[psutil.Process]:
     raise RuntimeError("Ollama server failed health check")
 
 
-def get_ollama_client() -> OpenAI:
+def start_ollama() -> OpenAI:
     """
     Initialize the Ollama server and return an OpenAI-compatible client.
     
