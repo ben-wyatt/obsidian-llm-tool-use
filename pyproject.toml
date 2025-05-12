@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "dspy-ai>=2.6.21",
+    "ipykernel>=6.29.5",
     "openai>=1.76.0",
     "psutil>=7.0.0",
     "python-dotenv>=1.1.0",
