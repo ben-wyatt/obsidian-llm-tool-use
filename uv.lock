@@ -1051,6 +1051,7 @@ name = "obsidian-llm-tool-use"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "dspy" },
     { name = "dspy-ai" },
     { name = "ipykernel" },
     { name = "openai" },
@@ -1061,6 +1062,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "dspy", specifier = ">=2.6.21" },
     { name = "dspy-ai", specifier = ">=2.6.21" },
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "openai", specifier = ">=1.76.0" },

@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "dspy>=2.6.21",
     "dspy-ai>=2.6.21",
     "ipykernel>=6.29.5",
     "openai>=1.76.0",
