@@ -1,0 +1,47 @@
+{
+  "traces": [],
+  "train": [],
+  "demos": [
+    {
+      "augmented": true,
+      "text": "contains no wit , only labored gags ",
+      "label": "negative"
+    },
+    {
+      "augmented": true,
+      "text": "that loves its characters and communicates something rather beautiful about human nature ",
+      "label": "positive"
+    },
+    {
+      "augmented": true,
+      "text": "remains utterly satisfied to remain the same throughout ",
+      "label": "negative"
+    },
+    {
+      "augmented": true,
+      "text": "on the worst revenge-of-the-nerds clich\u00e9s the filmmakers could dredge up ",
+      "label": "negative"
+    }
+  ],
+  "signature": {
+    "instructions": "Given the fields `text`, produce the fields `label`.",
+    "fields": [
+      {
+        "prefix": "Text:",
+        "description": "${text}"
+      },
+      {
+        "prefix": "Label:",
+        "description": "${label}"
+      }
+    ]
+  },
+  "lm": null,
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.12",
+      "dspy": "2.6.21",
+      "cloudpickle": "3.1"
+    }
+  }
+}
