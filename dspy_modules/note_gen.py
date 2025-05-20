@@ -29,7 +29,7 @@ class NoteGenerator(dspy.Module):
     def __init__(self):
         super().__init__()
         self.generate_note = dspy.ChainOfThought(GenerateNote)
-    def forward(self,context: str, note_list: List[str]) -> str:
+    def forward(self,context: str, note_list: List[str]) -> dspy.Prediction:
         obs_note = self.generate_note(context=context, note_list=note_list)
         return dspy.Prediction(obs_note=obs_note,context=context,note_list=note_list)
 
