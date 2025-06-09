@@ -31,7 +31,7 @@ class NoteGenerator(dspy.Module):
         self.generate_note = dspy.ChainOfThought(GenerateNote)
     def forward(self,context: str, note_list: List[str]) -> dspy.Prediction:
         obs_note = self.generate_note(context=context, note_list=note_list)
-        return dspy.Prediction(obs_note=obs_note,context=context,note_list=note_list)
+        return obs_note
 
 ####################
 #### Evaluation ####
