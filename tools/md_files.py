@@ -1,11 +1,12 @@
 """All the read/write operations for markdown files in the vault."""
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 raw_path = os.getenv('VAULT_PATH', '.')
 VAULT_PATH = os.path.expanduser(raw_path)
-
+TOOL_VERSION = os.getenv('TOOL_VERSION')
 
 def get_notes_list()-> list[str]:
     """Get a list of all markdown file names in the vault."""
@@ -29,11 +30,31 @@ def get_note_content(note_name: str) -> str:
         return file.read()
 
 
-def create_note(note_name: str, content: str = "") -> None:
-    """Create a new markdown note with the given name and content."""
+def create_note(note_name: str, content: str = "", extra_tags: list[str] = None, extra_properties: dict = None) -> None:
+    """Create a new markdown note with the given name and content, allowing extra tags and properties."""
+    # Generate YAML frontmatter
+    yaml_frontmatter = {
+        "created": datetime.now().strftime('%Y-%m-%d'),
+        "tags": ["llm-generated",] + (extra_tags if extra_tags else []),
+        "tool_version": TOOL_VERSION
+    }
+
+    # Add extra properties if provided
+    if extra_properties:
+        yaml_frontmatter.update(extra_properties)
+
+    # Convert frontmatter to YAML string
+    yaml_frontmatter_str = "---\n" + "\n".join(
+        f"{key}: {value if not isinstance(value, list) else '\n  - '.join([''] + value)}"
+        for key, value in yaml_frontmatter.items()
+    ) + "\n---\n"
+
+    # Prepend the YAML frontmatter to the content
+    full_content = f"{yaml_frontmatter_str}\n{content}"
+
     note_path = os.path.join(VAULT_PATH, note_name + '.md')
     with open(note_path, 'w', encoding='utf-8') as file:
-        file.write(content)
+        file.write(full_content)
 
 
 if __name__ == "__main__":
