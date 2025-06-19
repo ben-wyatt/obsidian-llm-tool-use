@@ -5,6 +5,8 @@ hello-world
 ## Implemented Features
 - basic os: read, write, list notes
 - single workflow template: add some document context and convert to obsidian note. links to previous notes. (non-optimized)
+- text_to_note: paste some raw text in, get an LLM-generated note. uses azure gpt-4.1-mini
+- web_to_note: URL list -> grab body text -> llm -> note
 
 
 ## Bugs

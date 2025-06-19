@@ -8,7 +8,7 @@ def test_dspy() -> dspy.Prediction:
     # Pull configuration from environment variables (set in .env)
     MODEL_NAME   = os.getenv("MODEL_NAME",   "openai/qwen2.5:7b-instruct-q4_K_M")
     TEMPERATURE  = float(os.getenv("TEMPERATURE", 0.2))
-    MAX_TOKENS   = int(os.getenv("MAX_TOKENS", 2048))
+    MAX_TOKENS   = int(os.getenv("MAX_TOKENS", 2048*16))
     CACHE_FLAG   = os.getenv("CACHE", "true").lower() not in ("0", "false", "no")
 
     lm = dspy.LM(
