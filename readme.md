@@ -10,7 +10,7 @@ hello-world
 
 
 ## Bugs
-- sometimes it just goes on and on and on. generating the same note over and over again. maybe have a limit to token length? This would have to be fixed either with slightly better prompting (DSPy!) or with training.
+- sometimes it just goes on and on and on. generating the same note over and over again. maybe have a limit to token length? This would have to be fixed either with slightly better prompting (DSPy!) or with training. (problem only with small qwen model that gets confused)
 
 ## Intended Features
 - obsidian search with tags
@@ -19,14 +19,18 @@ hello-world
 - Chat
 - internet search
 - multi-hop rag?
+- track token usage
+- more accurate token estimates (use DSPy completions data)
 
 
 ## List of Actionable Items
-- build some examples: context, note list -> nicely formatted notes.
-- implement DSPy `GenerateNote` to accept generic context, notes and reformat into Obsidian note Markdown.
-- implement multiple types of specific content: meeting transcripts, internet article results, etc (maybe not necessary?)
 - implement DSPy `GenerateSearchQuery` to search internet for relevant information. Flow becomes "Make me a note on Path Integrals" -> fully formed note
-- gather training data for generate_note()
+- gather training data for generate_note(); or other ways to get better insight from transcripts
+- organize thoughts: fix this readme, review Obsidian note with thoughts on the project
+- more advanced DSPy flows: grab extra research, identify possible new note topics
+- advanced note-connections: note aliases, fuzzy-match note names like "Stablecoin Future" and "Future of Stablecoins"
+- daily note integration
+
 
 
 
@@ -50,7 +54,7 @@ I don't really know how the `agent frameworks` handle their LLM flows. *Ideally*
   - answer: use the [Search functionality](https://help.obsidian.md/plugins/search#Search+operators)
 - then it identifies if any of them are actually important. moves forward
 - it reformats the given context, the transcript, into obsidian markdown. It should be aware of all of the major Obsidian Markup Features
-- 
+
 
 As a more complex example: "make a new note about GRPO.". It calls o3 to do some internet research on GRPO, then it searches for files by keywords, and reformats the GPT answer into a proper Obsidian note.
 
@@ -89,3 +93,5 @@ For each sample we need:
 
 
 I'm thinking that the best data-gathering strat is finding examples for context, running them through o3 for a first pass, then finish up by checking the frontmatter and whatever. Along the way save some of the unfinished ones so I can verify the verifier.
+
+
