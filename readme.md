@@ -1,48 +1,41 @@
-hello-world
-
-
 
 ## Implemented Features
-- basic os: read, write, list notes
-- single workflow template: add some document context and convert to obsidian note. links to previous notes. (non-optimized)
+- basic io: read, write, list notes
 - text_to_note: paste some raw text in, get an LLM-generated note. uses azure gpt-4.1-mini
 - web_to_note: URL list -> grab body text -> llm -> note
+- LLMs: Ollama (qwen) and azure/gpt-4.1-mini
 
 
 ## Bugs
-- sometimes it just goes on and on and on. generating the same note over and over again. maybe have a limit to token length? This would have to be fixed either with slightly better prompting (DSPy!) or with training. (problem only with small qwen model that gets confused)
+
 
 ## Intended Features
 - obsidian search with tags
-- summarize selection
-- expand selection
-- Chat
 - internet search
 - multi-hop rag?
 - track token usage
 - more accurate token estimates (use DSPy completions data)
 
 
+## Chat Features
+- interface
+- summarize selection
+- expand selection with web search
+- create new note
+
 ## List of Actionable Items
 - implement DSPy `GenerateSearchQuery` to search internet for relevant information. Flow becomes "Make me a note on Path Integrals" -> fully formed note
 - gather training data for generate_note(); or other ways to get better insight from transcripts
 - organize thoughts: fix this readme, review Obsidian note with thoughts on the project
 - more advanced DSPy flows: grab extra research, identify possible new note topics
-- advanced note-connections: note aliases, fuzzy-match note names like "Stablecoin Future" and "Future of Stablecoins"
+- advanced note-connections: note aliases, fuzzy-match note names like "Stablecoin Future" and "Future of Stablecoins". "Dwarkesh Podcast" with "Dwarkesh Patel Podcast"
+  - might require 
 - daily note integration
 
 
 
 
 
-### Chat Interactions
-- summarize
-- create new note
-- write on note
-- search
-
-
-I'll be using Qwen 2.5 7b through Ollama to start, since it scores very high on tool calling.
 
 ## Context -> Note Workflow
 I don't really know how the `agent frameworks` handle their LLM flows. *Ideally* what this system does is this:
@@ -93,5 +86,3 @@ For each sample we need:
 
 
 I'm thinking that the best data-gathering strat is finding examples for context, running them through o3 for a first pass, then finish up by checking the frontmatter and whatever. Along the way save some of the unfinished ones so I can verify the verifier.
-
-
