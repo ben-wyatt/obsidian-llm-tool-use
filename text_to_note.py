@@ -77,14 +77,17 @@ def obsidify_text(long_text: str,
                   insert_links: bool = True,
                   prompt_with_note_list: bool = False):
     """
-    Takes a long text, formats it into Obsidian markdown using DSPy LM, 
-    incorporates links to existing notes, and saves it to the vault.
+    Processes a long text to generate an Obsidian-compatible markdown note, 
+    optionally incorporating links to existing notes, and saves it to the vault.
 
     Args:
-        long_text (str): The input text to format.
-        note_name (str): The name of the new note to create.
-        verbose (bool): Whether to print verbose output.
-        ignore_token_limit (bool): Whether to automatically allow the LLM call without user confirmation.
+        long_text (str): The input text to be transformed into a markdown note.
+        note_name (str): The desired name for the new note.
+        verbose (bool, optional): If True, provides detailed output during processing. Defaults to False.
+        ignore_token_limit (bool, optional): If True, bypasses token limit confirmation for the LLM call. Defaults to False.
+        extra_properties (dict, optional): Additional metadata to include in the note. Defaults to None.
+        insert_links (bool, optional): If True, adds links to related existing notes. Defaults to True.
+        prompt_with_note_list (bool, optional): If True, includes the list of existing notes in the LLM prompt. Defaults to False.
     """
     assert_note_name_is_valid(note_name+".md")
     # Token estimation
@@ -145,6 +148,14 @@ def insert_links_to_existing_notes(long_text: str, note_list: list[str]) -> str:
         long_text = re.sub(pattern, f"[[{note}]]", long_text)
     return long_text
 
+def paste_text_to_note(text: str, note_name: str, verbose: bool = False, extra_properties: dict = None):
+    """
+    Paste text directly into a note.
+    """
+    assert_note_name_is_valid(note_name+".md")
+    model_tag = deployment_name.replace('.', '_') #obsidian tags don't support dots 
+    create_note(note_name, text, extra_tags=[model_tag], extra_properties=extra_properties)
+    print(f"Note '{note_name}' created successfully in the vault.")
 
 
 

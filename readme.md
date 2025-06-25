@@ -15,6 +15,7 @@
 - multi-hop rag?
 - track token usage
 - more accurate token estimates (use DSPy completions data)
+- append note: continue a note with new context
 
 
 ## Chat Features
