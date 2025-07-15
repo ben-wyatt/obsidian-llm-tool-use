@@ -7,11 +7,14 @@ requires-python = ">=3.12"
 dependencies = [
     "dspy>=2.6.21",
     "dspy-ai>=2.6.21",
+    "faiss-cpu>=1.11.0",
     "ipykernel>=6.29.5",
     "nbconvert>=7.16.6",
+    "numpy>=2.2.5",
     "openai>=1.76.0",
     "psutil>=7.0.0",
     "python-dotenv>=1.1.0",
     "requests>=2.32.3",
+    "sentence-transformers>=5.0.0",
     "youtube-transcript-api>=1.1.0",
 ]

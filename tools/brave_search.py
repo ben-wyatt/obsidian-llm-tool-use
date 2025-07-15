@@ -173,6 +173,34 @@ def extract_main_content(url: str) -> str:
         print(f"Error fetching URL {url}: {e}")
         return ""
 
+def get_web_content(query: str, count: int = 5) -> str:
+    """
+    Perform a web search for the given query, retrieve the main content from the resulting URLs, 
+    and return the aggregated content as a single string.
+
+    Parameters
+    ----------
+    query : str
+        The search query string to perform the web search.
+    count : int, optional
+        The number of search results to retrieve and process (default is 5).
+
+    Returns
+    -------
+    str
+        A string containing the source URLs and their corresponding main content, 
+        separated by double newlines. If no content is found for a URL, it is excluded.
+    """
+    urls = get_web_links(query, count)
+    content = "\n\n".join([
+        f"Source URL: {url}\n\nContent:\n{extract_main_content(url)}" 
+        for url in urls
+        if extract_main_content(url) != ""
+    ])
+    return content
+
+
+
 if __name__ == "__main__":
     results = get_web_links("deep dish pizza", count=5)
     print(results)
